@@ -1,14 +1,29 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view />
+  <my-app v-if="!isLoginPage"><router-view /></my-app>
+  <router-view v-else />
 </template>
+<script>
+import MyApp from "./components/AppLayout.vue";
+import { computed } from "vue";
+import { useRoute } from "vue-router";
+export default {
+  components: {
+    MyApp,
+  },
+  setup() {
+    const route = useRoute();
 
+    const isLoginPage = computed(() => route.name === "login"); // or route.path === '/login'
+
+    return {
+      isLoginPage,
+    };
+  },
+};
+</script>
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Cairo, sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -25,6 +40,13 @@ nav {
     &.router-link-exact-active {
       color: #42b983;
     }
+  }
+  body {
+    font-family: "Cairo", sans-serif;
+  }
+  body,
+  .v-application {
+    font-family: "Cairo", sans-serif !important;
   }
 }
 </style>
