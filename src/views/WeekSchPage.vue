@@ -20,7 +20,7 @@
             <td width="32px"></td>
 
             <td>
-              <v-btn color="#800080" @click="submitSchedule"
+              <v-btn color="grey" @click="submit1"
                 ><v-icon size="24px">mdi-cloud-cog-outline</v-icon></v-btn
               >
             </td>
@@ -46,84 +46,66 @@
       </v-simple-table>
     </v-card>
     <v-card
-      width="1000px"
+      width="1043px"
+      elevation="0.2"
       height="91px"
       style="
         display: flex;
         align-items: center;
-        margin-right: 280px;
+        margin-right: 270px;
         margin-top: 40px;
       "
     >
       <v-row dir="rtl">
-        <v-col cols="4">اسم المدرس : سامي العلي</v-col>
-        <v-col cols="4">الصف : الثاني</v-col>
-        <v-col cols="4">الشعبة : الثالثة</v-col>
+        <v-col cols="4">اسم المدرس : {{ this.teachername }}</v-col>
+        <v-col cols="4">الصف : {{ $route.query.grade_name }}</v-col>
+        <v-col cols="4">الشعبة : {{ $route.query.section_name }}</v-col>
       </v-row>
     </v-card>
     <v-container>
       <div style="height: 8px"></div>
       <v-row dir="rtl">
-        <v-col cols="2" style="font-size: 24px; font-weight: bold"
-          >المستخدمين</v-col
+        <v-col cols="3" style="font-size: 20px; font-weight: bold"
+          >طلاب هذه الشعبة :</v-col
         >
       </v-row>
-      <v-row justify="space-between">
-        <v-col cols="3">
-          <v-select
-            v-model="filterBy"
-            :items="filterOptions"
-            label="اضافة فلتر"
-            item-title="text"
-            item-value="value"
-            variant="outlined"
-            hide-details
-            append-inner-icon="mdi-account-filter-outline"
-            class="mr-4"
-            style="
-              max-width: 200px;
-              height: 64px;
-              margin-left: 124px;
-              direction: rtl;
-            "
-            density="comfortable"
-          ></v-select>
-        </v-col>
-        <v-col cols="3">
-          <v-select
-            v-model="filterBy"
-            :items="filterOptions"
-            label="اضافة فلتر"
-            item-title="text"
-            item-value="value"
-            variant="outlined"
-            hide-details
-            append-inner-icon="mdi-account-filter-outline"
-            class="mr-4"
-            style="
-              max-width: 200px;
-              height: 64px;
-              margin-left: 1px;
-              direction: rtl;
-            "
-            density="comfortable"
-          ></v-select>
-        </v-col>
-        <v-col cols="6">
+      <v-row class="mb-4" justify="space-between">
+        <v-col cols="9">
           <v-text-field
             v-model="search"
-            placeholder="ابحث عن طالب"
+            placeholder="ابحث عن معلم"
             variant="outlined"
             append-inner-icon="mdi-magnify"
             clearable
             dir="rtl"
             style="
               flex: 1;
-              max-width: 680px;
+              max-width: 922px;
               height: 64.1px;
-              margin-right: 170px;
+              margin-left: 380px;
             "
           ></v-text-field>
+        </v-col>
+
+        <v-col>
+          <v-select
+            v-model="filterBy"
+            :items="filterOptions"
+            label="اضافة فلتر"
+            item-title="text"
+            item-value="value"
+            variant="outlined"
+            hide-details
+            append-inner-icon="mdi-account-filter-outline"
+            class="mr-4"
+            style="
+              max-width: 200px;
+              height: 64px;
+              margin-left: 54px;
+              direction: rtl;
+            "
+            density="comfortable"
+          ></v-select>
         </v-col>
       </v-row>
       <v-container v-if="loading" class="text-center">
@@ -191,8 +173,8 @@
                   ><v-icon>mdi-dots-vertical</v-icon></v-btn
                 >
               </td>
-              <td>{{ item.school_class_division }}</td>
-              <td>{{ item.class_name }}</td>
+              <td>{{ this.$route.query.section_name }}</td>
+              <td>{{ this.$route.query.grade_name }}</td>
               <td>{{ item.parent_name }}</td>
               <td>
                 <span style="vertical-align: middle">{{ item.email }}</span>
@@ -292,8 +274,10 @@ export default {
   data() {
     return {
       loading: false,
+      teachername: "",
       search: "",
       filterBy: null,
+      d: [],
       parent: "",
       items: [],
       days: ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس"],
@@ -315,12 +299,47 @@ export default {
       },
       schedule: {},
       dialog: false,
+      week: {},
       selectedDay: "",
       selectedHour: "",
       formattedSchedule: {},
     };
   },
   methods: {
+    async fetchallpage() {
+      const payload = {
+        class_id: this.$route.query.grade_id,
+        division_id: this.$route.query.section_id,
+      };
+      await this.sendData("/getweekpagedetalisforschool", payload);
+      this.d = this.postData.data;
+      this.items = this.d.students;
+      this.teachername = this.d.teacher;
+      this.week = JSON.parse(this.d.week_schedule);
+      console.log(this.week);
+      // const apiResponse = {
+      //   الأحد: [
+      //     { date: "2025-05-11", time: "08:00 AM", subject: "رياضيات" },
+      //     { date: "2025-05-11", time: "09:00 AM", subject: "علوم" },
+      //     { date: "2025-05-11", time: "10:00 AM", subject: "عربي" },
+      //     { date: "2025-05-11", time: "11:00 AM", subject: "تاريخ" },
+      //     { date: "2025-05-11", time: "12:00 PM", subject: "إنجليزي" },
+      //     { date: "2025-05-11", time: "01:00 PM", subject: "رياضة" },
+      //   ],
+      //   الاثنين: [
+      //     { date: "2025-05-12", time: "08:00 AM", subject: "رياضيات" },
+      //     { date: "2025-05-12", time: "09:00 AM", subject: "علوم" },
+      //     { date: "2025-05-12", time: "10:00 AM", subject: "عربي" },
+      //     { date: "2025-05-12", time: "11:00 AM", subject: "تاريخ" },
+      //     { date: "2025-05-12", time: "12:00 PM", subject: "إنجليزي" },
+      //     { date: "2025-05-12", time: "01:00 PM", subject: "فنية" },
+      //   ],
+      //   // يمكنك إضافة بقية الأيام هنا...
+      // };
+      if (this.week != null) {
+        this.loadScheduleFromAPI(this.week);
+      }
+    },
     openPopup(day, hour) {
       this.selectedDay = day;
       this.selectedHour = hour;
@@ -335,6 +354,16 @@ export default {
     },
     getColor(day, hour) {
       return this.schedule[day]?.[hour] ? "green darken-1" : "#F8F4F8";
+    },
+    async submit1() {
+      this.submitSchedule();
+      const payload = {
+        class_id: this.$route.query.grade_id,
+        division_id: this.$route.query.section_id,
+        week_schedule: this.formattedSchedule,
+      };
+      await this.sendData("/storeweekschedule", payload);
+      window.location.reload();
     },
     submitSchedule() {
       const result = {};
@@ -367,17 +396,18 @@ export default {
       // يمكنك الإرسال عبر API:
       // axios.post('/api/schedule', result).then(...)
     },
-    loadScheduleFromAPI(apiData) {
-      const parsed = {};
-
-      for (const day in apiData) {
-        parsed[day] = {};
-        for (const entry of apiData[day]) {
-          parsed[day][entry.time] = entry.subject;
+    loadScheduleFromAPI(weekSchedule) {
+      const structuredSchedule = {};
+      for (const [day, entries] of Object.entries(weekSchedule)) {
+        structuredSchedule[day] = {};
+        for (const entry of entries) {
+          if (entry.time && entry.subject) {
+            structuredSchedule[day][entry.time] = entry.subject;
+          }
         }
       }
 
-      this.schedule = parsed;
+      this.schedule = structuredSchedule;
     },
     getRowClass(item, index) {
       const rowColors = ["row-color-1", "row-color-2"];
@@ -415,42 +445,19 @@ export default {
     submitForm() {
       this.$router.push({ name: "AddStudentPage" });
     },
-    async fetchdata() {
-      this.loading = true;
-      await this.fetchData("/getStudentsInfoForSchool")
-        .then(() => {
-          this.items = this.getData.data;
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-        });
-      this.loading = true;
+  },
+  computed: {
+    filteredItems() {
+      const term = this.search.toLowerCase();
+      return this.items.filter((item) =>
+        (item[this.filterBy] || "").toLowerCase().includes(term)
+      );
     },
   },
   mounted() {
-    this.fetchdata();
-    const apiResponse = {
-      الأحد: [
-        { date: "2025-05-11", time: "08:00 AM", subject: "رياضيات" },
-        { date: "2025-05-11", time: "09:00 AM", subject: "علوم" },
-        { date: "2025-05-11", time: "10:00 AM", subject: "عربي" },
-        { date: "2025-05-11", time: "11:00 AM", subject: "تاريخ" },
-        { date: "2025-05-11", time: "12:00 PM", subject: "إنجليزي" },
-        { date: "2025-05-11", time: "01:00 PM", subject: "رياضة" },
-      ],
-      الاثنين: [
-        { date: "2025-05-12", time: "08:00 AM", subject: "رياضيات" },
-        { date: "2025-05-12", time: "09:00 AM", subject: "علوم" },
-        { date: "2025-05-12", time: "10:00 AM", subject: "عربي" },
-        { date: "2025-05-12", time: "11:00 AM", subject: "تاريخ" },
-        { date: "2025-05-12", time: "12:00 PM", subject: "إنجليزي" },
-        { date: "2025-05-12", time: "01:00 PM", subject: "فنية" },
-      ],
-      // يمكنك إضافة بقية الأيام هنا...
-    };
+    this.fetchallpage();
 
     // استدعاء الدالة لتحميل البيانات في الجدول
-    this.loadScheduleFromAPI(apiResponse);
   },
 };
 </script>
