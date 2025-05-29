@@ -19,6 +19,10 @@ import FoodPage from "../views/FoodPage.vue";
 import FoodDayPage from "../views/FoodDayPage.vue";
 import AddFoodPage from "../views/AddFoodPage.vue";
 import WeekSchPage from "../views/WeekSchPage.vue";
+import ExamSchPage from "../views/ExamSchPage.vue";
+import Schedules from "../views/SchedulesPage.vue";
+import SelectDivisonAndClassPageSchW from "../views/SelectDivisonAndClassPageSchW.vue";
+import SelectDivisonAndClassPageSchE from "../views/SelectDivisonAndClassPageSchE.vue";
 const routes = [
   {
     path: "/",
@@ -31,9 +35,33 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
-    path: "/WeekSchPage",
+    path: "/Schedules/SelectDivisonAndClassPageSchW",
+    name: "SelectDivisonAndClassPageSchW",
+    component: SelectDivisonAndClassPageSchW,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/Schedules/SelectDivisonAndClassPageSchE",
+    name: "SelectDivisonAndClassPageSchE",
+    component: SelectDivisonAndClassPageSchE,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/Schedules/WeekSchPage",
     name: "WeekSchPage",
     component: WeekSchPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/Schedules",
+    name: "Schedules",
+    component: Schedules,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/Schedules/ExamSchPage",
+    name: "ExamSchPage",
+    component: ExamSchPage,
     meta: { requiresAuth: true },
   },
   {

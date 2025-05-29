@@ -56,8 +56,8 @@ export default {
         },
         {
           icon: "mdi-calendar-month-outline",
-          text: "برنامج الدوام",
-          route: "/WeekSchPage",
+          text: "جداول المدرسة",
+          route: "/Schedules",
         },
         {
           icon: "mdi-bus-side",
