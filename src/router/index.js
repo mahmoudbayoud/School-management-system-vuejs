@@ -23,15 +23,46 @@ import ExamSchPage from "../views/ExamSchPage.vue";
 import Schedules from "../views/SchedulesPage.vue";
 import SelectDivisonAndClassPageSchW from "../views/SelectDivisonAndClassPageSchW.vue";
 import SelectDivisonAndClassPageSchE from "../views/SelectDivisonAndClassPageSchE.vue";
+import StudentAllDetailsPage from "../views/StudentAllDetailsPage.vue";
+import ChatPage from "@/views/ChatPage.vue";
+import activityPage from "@/views/activityPage.vue";
+import StepperView from "../views/StepperView.vue";
+import AddActivityPage from "../views/AddActivityPage.vue";
 const routes = [
   {
     path: "/",
     redirect: "/HomePage",
   },
+  { path: "/step1", component: StepperView },
+  { path: "/step2", component: StepperView },
   {
     path: "/TeacherPage",
     name: "TeacherPage",
     component: TeacherPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/activityPage",
+    name: "activityPage",
+    component: activityPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/AddActivityPage",
+    name: "AddActivityPage",
+    component: AddActivityPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/Chat",
+    name: "ChatPage",
+    component: ChatPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/StudentPage/StudentAllDetailsPage",
+    name: "StudentAllDetailsPage",
+    component: StudentAllDetailsPage,
     meta: { requiresAuth: true },
   },
   {

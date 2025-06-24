@@ -8,7 +8,7 @@
           class="text-center"
           style="font-size: 30px; font-weight: bold; color: gray"
         >
-          المعلمين
+          الطلاب
         </v-col>
       </v-row>
       <v-row class="flex-row-reverse">
@@ -17,7 +17,7 @@
           class="text-center"
           style="font-size: 18px; color: gray"
         >
-          تفاصيل المعلم
+          تفاصيل الطالب
         </v-col>
       </v-row>
       <div style="height: 32px"></div>
@@ -38,7 +38,11 @@
                 <!-- Icon below the image -->
                 <div style="height: 24px"></div>
                 <div style="display: flex; flex-direction: row; gap: 12px">
-                  <img src="../assets/Icons/Frame 30085.png" />
+                  <img
+                    @click="goTopg()"
+                    style="cursor: pointer"
+                    src="../assets/Icons/Frame 30085.png"
+                  />
                   <img src="../assets/Icons/Frame 30086.png" />
                   <img src="../assets/Icons/Frame 30087.png" />
                 </div>
@@ -139,7 +143,7 @@
               width="110.96px"
               height="42.53px"
             >
-              اضافة معلم اخر
+              اضافة طالب اخر
             </v-btn>
           </v-col>
         </v-row>
@@ -160,6 +164,11 @@ export default {
   methods: {
     goBack() {
       this.$router.go(-1);
+    },
+    goTopg() {
+      this.$router.push({
+        name: "StudentAllDetailsPage",
+      });
     },
   },
 };

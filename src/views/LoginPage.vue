@@ -141,6 +141,11 @@
 import useGetDataMixin from "@/mixins/useGetDataMixin";
 import usePostDataMixin from "@/mixins/usePostDataMixin";
 //import { RouterLink } from "vue-router";
+import { auth } from "@/firebase";
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
 export default {
   mixins: [useGetDataMixin, usePostDataMixin],
   data() {
@@ -170,19 +175,53 @@ export default {
   },
   methods: {
     async submitForm() {
+      // تسجيل الدخول إلى Laravel أولاً
       await this.sendData("/login", this.form);
       const token = this.postData.token;
       const userData = this.postData.data;
-      console.log("jo", userData);
+
       if (token && userData) {
-        console.log("Token:", token);
+        // حفظ بيانات Laravel
         localStorage.setItem("auth_token", token);
-        this.data = JSON.stringify(userData);
-        console.log("User Data:", this.data);
-        localStorage.setItem("userData", this.data);
+        localStorage.setItem("userData", JSON.stringify(userData));
+
+        // تسجيل الدخول إلى Firebase باستخدام نفس البريد وكلمة المرور
+        try {
+          await signInWithEmailAndPassword(
+            auth,
+            this.form.email,
+            this.form.password
+          );
+          console.log("تم تسجيل الدخول إلى Firebase بنجاح ✅");
+        } catch (firebaseLoginError) {
+          if (
+            firebaseLoginError.code === "auth/user-not-found" ||
+            firebaseLoginError.code === "auth/invalid-credential"
+          ) {
+            // المستخدم غير موجود في Firebase → نقوم بإنشائه
+            try {
+              await createUserWithEmailAndPassword(
+                auth,
+                this.form.email,
+                this.form.password
+              );
+              console.log("تم إنشاء المستخدم في Firebase بنجاح ✨");
+            } catch (createError) {
+              console.error("فشل إنشاء المستخدم في Firebase ❌", createError);
+            }
+          } else {
+            console.error(
+              "فشل تسجيل الدخول في Firebase ❌",
+              firebaseLoginError
+            );
+          }
+        }
+
+        // إعادة التوجيه
         this.$router.push({ name: "HomePage" });
       } else {
-        console.error("error");
+        console.error("فشل تسجيل الدخول إلى Laravel");
+        alert("فشل تسجيل الدخول: تأكد من البريد وكلمة المرور.");
       }
     },
   },

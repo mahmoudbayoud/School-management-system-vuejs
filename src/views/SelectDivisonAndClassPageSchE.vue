@@ -34,6 +34,7 @@
             outlined
             color="white"
             class="mb-2 justify-center"
+            @click="goToExam(section.id, grade.id, section.name, grade.name)"
           >
             {{ section.name }}
           </v-btn>
@@ -67,6 +68,17 @@ export default {
     },
     toggleGrade(index) {
       this.grades[index].show = !this.grades[index].show;
+    },
+    goToExam(section, grade, sectionname, gradename) {
+      this.$router.push({
+        name: "ExamSchPage",
+        query: {
+          section_id: section,
+          grade_id: grade,
+          section_name: sectionname,
+          grade_name: gradename,
+        },
+      });
     },
     async fetchdata() {
       this.loading = true;

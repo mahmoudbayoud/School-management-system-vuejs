@@ -49,7 +49,14 @@
               <v-row>
                 <v-col
                   ><div style="display: flex; flex-direction: row; gap: 16px">
-                    <v-icon style="width: 26px; height: 26px; color: #8d92a5"
+                    <v-icon
+                      style="
+                        width: 26px;
+                        height: 26px;
+                        color: #8d92a5;
+                        cursor: pointer;
+                      "
+                      @click="copyAllCredentials"
                       >mdi-content-copy</v-icon
                     >
                     <v-icon style="width: 26px; height: 26px; color: #8d92a5"
@@ -158,6 +165,20 @@ export default {
   methods: {
     goBack() {
       this.$router.go(-1);
+    },
+    copyAllCredentials() {
+      const email = this.$route.query.email || "";
+      const password = this.$route.query.password || "";
+      const text = `Email: ${email}\nPassword: ${password}`;
+
+      navigator.clipboard
+        .writeText(text)
+        .then(() => {
+          alert("تم نسخ البريد وكلمة المرور!");
+        })
+        .catch((err) => {
+          console.error("فشل النسخ:", err);
+        });
     },
   },
 };

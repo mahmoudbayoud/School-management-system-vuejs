@@ -4,7 +4,7 @@
     <v-row
       ><v-col cols="3"
         ><span style="font-weight: bold; font-size: 20px"
-          >برنامج الدوام :</span
+          >جدول الدوام :</span
         ></v-col
       ></v-row
     >
@@ -248,7 +248,7 @@
             >
               <v-btn
                 block
-                color="secondary"
+                color="#00FF8C"
                 @click="selectMaterial(material)"
                 style="
                   font-family: 'Cairo';
@@ -433,8 +433,8 @@ export default {
             email: selectedparentEmail,
             phone: selectedparentPhone,
             pname: selectedparentName,
-            class: item.class_name,
-            division: item.school_class_division,
+            class: this.$route.query.grade_name,
+            division: this.$route.query.section_name,
           },
         },
       });

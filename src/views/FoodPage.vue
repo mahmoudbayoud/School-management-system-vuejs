@@ -190,29 +190,38 @@
                   no-gutters
                   class="px-4 pt-6 pb-2"
                   align="center"
-                  style="margin-left: 800px"
+                  style="margin-left: 550px"
                 >
                   <v-col cols="12" md="9">
                     <div
                       class="mb-1"
-                      style="font-size: 18px; font-weight: bold; color: #393e44"
+                      style="
+                        font-size: 18px;
+                        font-weight: bold;
+                        color: #393e44;
+                        margin-left: 270px;
+                      "
                     >
-                      طلب حجز {{ order.dayname }}
+                      حجز {{ order.dayname }}
                     </div>
-                    <div style="height: 16px"></div>
                     <div
                       style="
                         font-size: 13px;
                         font-weight: normal;
                         color: #a7a7a7;
+                        margin-left: 320px;
                       "
                     >
                       رقم العملية: {{ order.student_food_meal.process_number }}
                     </div>
+                    <div style="height: 8px"></div>
+                    <div style="font-size: 15px; font-weight: normal">
+                      ملاحظات: {{ order.student_food_meal.notes }}
+                    </div>
                   </v-col>
 
                   <v-col
-                    cols="12"
+                    cols="3"
                     md="3"
                     class="d-flex flex-column align-center justify-center"
                     style="margin-top: 35px"
@@ -235,7 +244,7 @@
                 <v-row
                   class="px-4 pb-4 pt-2"
                   justify="start"
-                  style="gap: 35px; margin-top: -70px; margin-left: 36px"
+                  style="gap: 35px; margin-top: -50px; margin-left: 36px"
                 >
                   <v-col cols="6" md="2">
                     <v-btn

@@ -282,7 +282,7 @@ export default {
         name: this.name,
         bus_driver_id: this.selectedBusdriver,
       };
-      console.log("hi", payload);
+
       await this.sendData("/student/store", payload);
       this.parentdetalis = this.postData.data;
       const selectedGradeName = this.grades.find(

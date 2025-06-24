@@ -67,7 +67,7 @@ export default {
         {
           icon: "mdi-calendar-check-outline",
           text: "ادارة النشاطات",
-          route: "/activities",
+          route: "/activityPage",
         },
         {
           icon: "mdi-silverware-fork-knife",

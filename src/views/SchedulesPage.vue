@@ -16,7 +16,7 @@
         style="width: 1200px; height: 90px; font-size: 16px"
         @click="goToPageW()"
       >
-        برنامج الدوام
+        جدول الدوام
       </v-btn>
       <div style="height: 32px"></div>
       <v-btn
@@ -25,7 +25,7 @@
         style="width: 1200px; height: 90px; font-size: 16px"
         @click="goToPageE()"
       >
-        برنامج الامتحان
+        جدول الامتحان
       </v-btn>
     </div>
   </v-container>

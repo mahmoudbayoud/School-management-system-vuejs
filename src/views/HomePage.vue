@@ -326,10 +326,17 @@ export default defineComponent({
           position: "top",
         },
       },
-      pieSeries: [22, 28, 25, 16, 9],
+      pieSeries: [22, 28, 25, 16, 9, 5],
       pieChartOptions: {
-        labels: ["الأول", "الثاني", "الثالث", "الرابع", "الخامس"],
-        colors: ["#2196f3", "#ff9800", "#f44336", "#4caf50", "#9c27b0"],
+        labels: ["الأول", "الثاني", "الثالث", "الرابع", "الخامس", "السادس"],
+        colors: [
+          "#2196f3",
+          "#ff9800",
+          "#f44336",
+          "#4caf50",
+          "#9c27b0",
+          "#00F0E4",
+        ],
         legend: {
           position: "bottom",
         },
