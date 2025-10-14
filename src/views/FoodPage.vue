@@ -142,12 +142,9 @@
                       عدد الحجوزات:{{ meal.reservations }}
                     </div>
                     <div
-                      style="
-                        color: grey;
-                        margin-left: 100px;
-                        padding: 0;
-                        font-size: 15px;
-                      "
+                      class="cursor-pointer"
+                      style="color: grey; margin-left: 100px; font-size: 15px"
+                      @click="showMealDetails(meal)"
                     >
                       انقر لعرض التفاصيل
                     </div>
@@ -156,7 +153,7 @@
                   <!-- الصورة -->
                   <v-col cols="auto" style="padding-bottom: 35px">
                     <v-avatar size="109">
-                      <v-img src="https://i.pravatar.cc/150?img=3" />
+                      <v-img :src="require('@/assets/food.jpg')" />
                     </v-avatar>
                   </v-col>
                 </v-row>
@@ -183,7 +180,7 @@
                 style="overflow: hidden; position: relative"
               >
                 <!-- شارة السعر -->
-                <div class="price-tag">{{ order.price }} $</div>
+                <div class="price-tag">{{ order.price }} ل.س</div>
 
                 <!-- تفاصيل الطلب + صورة الطالب -->
                 <v-row
@@ -209,7 +206,7 @@
                         font-size: 13px;
                         font-weight: normal;
                         color: #a7a7a7;
-                        margin-left: 320px;
+                        margin-left: 303px;
                       "
                     >
                       رقم العملية: {{ order.student_food_meal.process_number }}
@@ -270,6 +267,100 @@
           </v-row>
         </v-container>
       </div>
+      <v-dialog v-model="dialog1" max-width="600">
+        <v-card
+          class="pa-4"
+          elevation="6"
+          style="
+            border-radius: 20px;
+            background-color: white;
+            font-family: 'Cairo', sans-serif;
+          "
+        >
+          <v-card-actions
+            style="position: absolute; top: 11px; right: 10px; z-index: 10"
+          >
+            <v-icon color="#800080" size="24">mdi-pencil</v-icon>
+          </v-card-actions>
+          <!-- العنوان -->
+          <v-card-title
+            style="
+              font-weight: bold;
+              font-size: 22px;
+              text-align: center;
+              width: 100%;
+              color: #800080;
+            "
+          >
+            تفاصيل الوجبة
+          </v-card-title>
+
+          <!-- تفاصيل الوجبة -->
+          <v-card-text>
+            <div
+              v-if="selectedMeal"
+              style="margin-bottom: 16px; text-align: right"
+            >
+              <p><strong>اليوم:</strong> {{ selectedMeal.day_name }}</p>
+              <p><strong>الوجبة:</strong> {{ selectedMeal.Food_name }}</p>
+              <p><strong>المحتويات:</strong> {{ selectedMeal.contents }}</p>
+              <p><strong>المقبلات:</strong> {{ selectedMeal.entrees }}</p>
+              <p><strong>السعر:</strong> {{ selectedMeal.price }} ل.س</p>
+              <p><strong>التاريخ:</strong> {{ selectedMeal.date }}</p>
+            </div>
+
+            <!-- الطلاب -->
+            <h3
+              style="
+                color: #800080;
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 10px;
+                text-align: right;
+              "
+              dir="rtl"
+            >
+              الطلاب المسجلين:
+            </h3>
+            <ul
+              style="
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+                text-align: right;
+              "
+              dir="rtl"
+            >
+              <li
+                v-for="(student, index) in mealStudents"
+                :key="index"
+                style="padding: 10px 0; border-bottom: 1px solid #eee"
+              >
+                <div style="font-weight: bold; font-size: 16px; color: black">
+                  {{ student.student_name }}
+                </div>
+                <div style="font-size: 14px; color: gray; margin-top: 4px">
+                  رقم العملية: {{ student.process_number }}
+                </div>
+              </li>
+            </ul>
+          </v-card-text>
+
+          <!-- زر الإغلاق -->
+          <v-card-actions style="justify-content: center; margin-top: 10px">
+            <v-btn
+              color="#800080"
+              dark
+              rounded
+              elevation="2"
+              style="padding: 8px 24px; font-weight: bold"
+              @click="dialog1 = false"
+            >
+              إغلاق
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-container>
   </div>
 </template>
@@ -291,10 +382,25 @@ export default {
       name: "OrdersList",
       orders: [],
       meals: [],
+      dialog1: false,
+      selectedMeal: null,
       m: [],
     };
   },
   methods: {
+    async fetchMealStudents(mealId) {
+      try {
+        await this.fetchData(`/getMealStudents/${mealId}`);
+        this.mealStudents = this.getData; // لازم يرجع [{ student_name, process_number }]
+      } catch (error) {
+        console.error("Error fetching meal students:", error);
+      }
+    },
+    async showMealDetails(meal) {
+      this.selectedMeal = meal;
+      await this.fetchMealStudents(meal.id);
+      this.dialog1 = true;
+    },
     goToPage() {
       this.$router.push({
         name: "FoodDayPage",

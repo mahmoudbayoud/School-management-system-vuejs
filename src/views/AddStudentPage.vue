@@ -15,7 +15,7 @@
               color: #474a4c;
               margin-right: 90px;
             "
-            >اضافة معلم</span
+            >اضافة طالب</span
           >
         </v-col>
       </v-row>

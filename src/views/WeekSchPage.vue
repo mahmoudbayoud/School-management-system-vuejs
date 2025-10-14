@@ -73,7 +73,7 @@
         <v-col cols="9">
           <v-text-field
             v-model="search"
-            placeholder="ابحث عن معلم"
+            placeholder="ابحث عن طالب"
             variant="outlined"
             append-inner-icon="mdi-magnify"
             clearable

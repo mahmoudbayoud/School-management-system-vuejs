@@ -8,6 +8,8 @@ import { createVuetify } from "vuetify";
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
 import "vuetify/styles";
+// Google Maps
+import VueGoogleMaps from "@fawmi/vue-google-maps";
 // Components
 import App from "./App.vue";
 
@@ -16,7 +18,6 @@ const vuetify = createVuetify({
     "font-family": "Cairo, sans-serif",
   },
   components,
-
   directives,
   theme: {
     defaultTheme: "myCustomTheme",
@@ -47,4 +48,14 @@ const vuetify = createVuetify({
   },
 });
 
-createApp(App).use(vuetify).use(store).use(router).mount("#app");
+const app = createApp(App);
+
+// **إضافة Google Maps**
+app.use(VueGoogleMaps, {
+  load: {
+    key: "AIzaSyCQierXOePVhkv1i-swvfCwsHoWccBKbTc", // ضع هنا مفتاح Google Maps الخاص بك
+    libraries: "places",
+  },
+});
+
+app.use(vuetify).use(store).use(router).mount("#app");

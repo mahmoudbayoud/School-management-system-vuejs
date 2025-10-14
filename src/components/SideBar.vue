@@ -77,19 +77,29 @@ export default {
         {
           icon: "mdi-chat-processing-outline",
           text: "التواصل مع الاباء",
-          route: "/parents",
+          route: "/DashboardPage",
         },
         {
-          icon: "mdi-comment-alert-outline",
-          text: "الشكاوي",
-          route: "/complaints",
+          icon: "mdi-post-outline",
+          text: "المنشورات",
+          route: "/PostsPage",
+        },
+        {
+          icon: "mdi-comment-processing-outline",
+          text: "التعليقات",
+          route: "/commentsPage",
+        },
+        {
+          icon: "mdi-book-open-variant",
+          text: "النتائج الامتحانية",
+          route: "/MarksPage",
         },
         {
           icon: "mdi-help-circle-outline",
-          text: "دعم العملاء",
-          route: "/support",
+          text: "الاسئلة الشائعة",
+          route: "/CustomerSupportPage",
         },
-        { icon: "mdi-cog", text: "الاعدادات", route: "/settings" },
+        { icon: "mdi-cog", text: "الاعدادات", route: "/settingsPage" },
         { icon: "mdi-logout", text: "تسجيل الخروج", route: "/logout" },
       ],
     };

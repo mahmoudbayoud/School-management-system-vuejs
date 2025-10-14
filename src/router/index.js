@@ -24,10 +24,22 @@ import Schedules from "../views/SchedulesPage.vue";
 import SelectDivisonAndClassPageSchW from "../views/SelectDivisonAndClassPageSchW.vue";
 import SelectDivisonAndClassPageSchE from "../views/SelectDivisonAndClassPageSchE.vue";
 import StudentAllDetailsPage from "../views/StudentAllDetailsPage.vue";
-import ChatPage from "@/views/ChatPage.vue";
 import activityPage from "@/views/activityPage.vue";
+import CustomerSupportPage from "@/views/CustomerSupportPage.vue";
 import StepperView from "../views/StepperView.vue";
 import AddActivityPage from "../views/AddActivityPage.vue";
+import settingsPage from "../views/settingsPage.vue";
+import DashboardPage from "../views/DashboardPage.vue";
+import PostsPage from "../views/PostsPage.vue";
+import PublicPostsPage from "../views/PublicPostsPage.vue";
+import PrivatePostsPage from "../views/PrivatePostsPage.vue";
+import SectionDetails from "../views/SectionDetails.vue";
+import commentsPage from "../views/commentsPage.vue";
+import StudentMarksPage from "../views/StudentMarksPage.vue";
+import MarksPage from "../views/MarksPage.vue";
+import SectionDetailsMarksPage from "../views/SectionDetailsMarksPage.vue";
+import AttenedencePage from "../views/AttenedencePage.vue";
+import ReprotPage from "../views/ReprotPage.vue";
 const routes = [
   {
     path: "/",
@@ -36,9 +48,87 @@ const routes = [
   { path: "/step1", component: StepperView },
   { path: "/step2", component: StepperView },
   {
+    path: "/ReprotPage",
+    name: "ReprotPage",
+    component: ReprotPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/StudentPage/StudentDetails/AttenedencePage",
+    name: "AttenedencePage",
+    component: AttenedencePage,
+    meta: { requiresAuth: true },
+  },
+  {
     path: "/TeacherPage",
     name: "TeacherPage",
     component: TeacherPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/MarksPage",
+    name: "MarksPage",
+    component: MarksPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/MarksPage/SectionDetailsMarksPage",
+    name: "SectionDetailsMarksPage",
+    component: SectionDetailsMarksPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/commentsPage",
+    name: "commentsPage",
+    component: commentsPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/MarksPage/StudentMarksPage",
+    name: "StudentMarksPage",
+    component: StudentMarksPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/ClassPage/SectionDetails",
+    name: "SectionDetails",
+    component: SectionDetails,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/PostsPage/PublicPostsPage",
+    name: "PublicPostsPage",
+    component: PublicPostsPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/PostsPage/PrivatePostsPage",
+    name: "PrivatePostsPage",
+    component: PrivatePostsPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/PostsPage",
+    name: "PostsPage",
+    component: PostsPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/DashboardPage",
+    name: "DashboardPage",
+    component: DashboardPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/CustomerSupportPage",
+    name: "CustomerSupportPage",
+    component: CustomerSupportPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/settingsPage",
+    name: "settingsPage",
+    component: settingsPage,
     meta: { requiresAuth: true },
   },
   {
@@ -51,12 +141,6 @@ const routes = [
     path: "/AddActivityPage",
     name: "AddActivityPage",
     component: AddActivityPage,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/Chat",
-    name: "ChatPage",
-    component: ChatPage,
     meta: { requiresAuth: true },
   },
   {

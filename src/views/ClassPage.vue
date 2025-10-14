@@ -34,6 +34,9 @@
             outlined
             color="white"
             class="mb-2 justify-center"
+            @click="
+              handleSection(grade.id, section.id, grade.name, section.name)
+            "
           >
             {{ section.name }}
           </v-btn>
@@ -73,6 +76,17 @@ export default {
     },
     toggleGrade(index) {
       this.grades[index].show = !this.grades[index].show;
+    },
+    handleSection(gradeId, sectionId, gradeName, sectionName) {
+      this.$router.push({
+        name: "SectionDetails",
+        query: {
+          gradeId,
+          sectionId,
+          gradeName,
+          sectionName,
+        },
+      });
     },
     async addSection(id, cid) {
       const payload = {

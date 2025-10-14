@@ -19,10 +19,15 @@
             </td>
             <td width="32px"></td>
 
-            <td>
-              <v-btn color="grey" @click="submit1"
-                ><v-icon size="24px">mdi-cloud-cog-outline</v-icon></v-btn
-              >
+            <!-- هنا زر الحفظ + زر ضبط التواريخ جنب بعض -->
+            <td style="display: flex; gap: 8px; justify-content: center">
+              <v-btn color="grey" @click="submit1">
+                <v-icon size="24px">mdi-cloud-cog-outline</v-icon>
+              </v-btn>
+
+              <v-btn color="#800080" dark @click="showDateDialog = true">
+                <v-icon size="24px">mdi-calendar-edit</v-icon>
+              </v-btn>
             </td>
           </tr>
         </thead>
@@ -41,12 +46,15 @@
             </td>
             <td></td>
             <td>
-              {{ dayDates[day] }}
+              {{ getDateForDay(day) }}
             </td>
           </tr>
         </tbody>
       </v-simple-table>
+
+      <!-- (اختياري) زر حفظ مرئي أسفل الجدول — بقى كما كان -->
     </v-card>
+
     <v-card
       width="1043px"
       elevation="0.2"
@@ -222,6 +230,8 @@
           </v-contianier>
         </div> </v-container
     ></v-container>
+
+    <!-- بوب أب اختيار المادة (كما كان) -->
     <v-dialog v-model="dialog" max-width="400px">
       <v-card>
         <v-row dir="rtl"
@@ -265,6 +275,55 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+
+    <!-- بوب أب ضبط التواريخ (الجديد) -->
+    <v-dialog v-model="showDateDialog" max-width="600px">
+      <v-card>
+        <v-row dir="rtl" class="px-4">
+          <v-col cols="10">
+            <v-card-title
+              class="text-center"
+              style="font-weight: bold; font-family: 'Cairo'; font-size: 18px"
+            >
+              اختر تواريخ الأيام
+            </v-card-title>
+          </v-col>
+          <v-col cols="2">
+            <v-btn elevation="0" @click="showDateDialog = false">
+              <v-icon color="red">mdi-close</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+
+        <v-card-text>
+          <v-row
+            v-for="day in days"
+            :key="'date-' + day"
+            class="mb-3"
+            align="center"
+          >
+            <v-col cols="4" class="text-right" style="font-weight: bold">
+              {{ day }}
+            </v-col>
+            <v-col cols="8">
+              <!-- نحفظ التواريخ مباشرة في dayDates (بدون تغيير اللوجيك) -->
+              <v-text-field
+                v-model="dayDates[day]"
+                type="date"
+                variant="outlined"
+                hide-details
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text color="red" @click="showDateDialog = false">إلغاء</v-btn>
+          <v-btn text color="green" @click="saveDates">حفظ</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -292,13 +351,14 @@ export default {
         "12:15 PM",
       ],
       materials: ["رياضيات", "علوم", "عربي", "تاريخ", "جغرافيا", "إنجليزي"],
+      // تبقي القيم الأساسية موجودة (تستبدل بالبوب أب عند الحفظ)
       dayDates: {
-        الأحد: "2025-05-11",
-        الاثنين: "2025-05-12",
-        الثلاثاء: "2025-05-13",
-        الأربعاء: "2025-05-14",
-        الخميس: "2025-05-15",
-        الاحد: "2025-05-18",
+        الأحد: "2025-09-20",
+        الاثنين: "2025-09-21",
+        الثلاثاء: "2025-09-22",
+        الأربعاء: "2025-09-23",
+        الخميس: "2025-09-24",
+        الاحد: "2025-09-27",
       },
       schedule: {},
       dialog: false,
@@ -306,6 +366,11 @@ export default {
       selectedDay: "",
       selectedHour: "",
       formattedSchedule: {},
+      // جديد: تحكم بفتح بوب أب التواريخ
+      showDateDialog: false,
+      // باقي المتغيرات التي قد تحتاجها الواجهة
+      filterOptions: [],
+      headers: [],
     };
   },
   methods: {
@@ -320,25 +385,7 @@ export default {
       this.teachername = this.d.teacher;
       this.week = JSON.parse(this.d.exam_schedule);
       console.log(this.week);
-      // const apiResponse = {
-      //   الأحد: [
-      //     { date: "2025-05-11", time: "08:00 AM", subject: "رياضيات" },
-      //     { date: "2025-05-11", time: "09:00 AM", subject: "علوم" },
-      //     { date: "2025-05-11", time: "10:00 AM", subject: "عربي" },
-      //     { date: "2025-05-11", time: "11:00 AM", subject: "تاريخ" },
-      //     { date: "2025-05-11", time: "12:00 PM", subject: "إنجليزي" },
-      //     { date: "2025-05-11", time: "01:00 PM", subject: "رياضة" },
-      //   ],
-      //   الاثنين: [
-      //     { date: "2025-05-12", time: "08:00 AM", subject: "رياضيات" },
-      //     { date: "2025-05-12", time: "09:00 AM", subject: "علوم" },
-      //     { date: "2025-05-12", time: "10:00 AM", subject: "عربي" },
-      //     { date: "2025-05-12", time: "11:00 AM", subject: "تاريخ" },
-      //     { date: "2025-05-12", time: "12:00 PM", subject: "إنجليزي" },
-      //     { date: "2025-05-12", time: "01:00 PM", subject: "فنية" },
-      //   ],
-      //   // يمكنك إضافة بقية الأيام هنا...
-      // };
+
       if (this.week != null) {
         this.loadScheduleFromAPI(this.week);
       }
@@ -355,6 +402,13 @@ export default {
       this.schedule[this.selectedDay][this.selectedHour] = material;
       this.dialog = false;
     },
+    // عرض التاريخ: نعرض فقط جزء التاريخ كما هو في dayDates
+    getDateForDay(day) {
+      const d = this.dayDates[day];
+      if (!d) return "";
+      // لو القيمة ISO أو تحتوي وقت، نأخذ أول 10 محارف (YYYY-MM-DD)
+      return String(d).slice(0, 10);
+    },
     getColor(day, hour) {
       return this.schedule[day]?.[hour] ? "green darken-1" : "#F8F4F8";
     },
@@ -366,7 +420,12 @@ export default {
         exam_schedule: this.formattedSchedule,
       };
       await this.sendData("/storeExamschedule", payload);
-      window.location.reload();
+      setTimeout(() => {
+        this.editSuccess = false;
+
+        // توجيه المستخدم باستخدام اسم الصفحة
+        this.$router.push({ name: "Schedules" });
+      }, 2000);
     },
     submitSchedule() {
       const result = {};
@@ -448,6 +507,12 @@ export default {
     submitForm() {
       this.$router.push({ name: "AddStudentPage" });
     },
+
+    // جديد: حفظ التواريخ (بس يقفل البوب أب؛ القيم مخزنة في dayDates مباشرة)
+    saveDates() {
+      this.showDateDialog = false;
+      console.log("التواريخ المختارة:", this.dayDates);
+    },
   },
   computed: {
     filteredItems() {
@@ -459,11 +524,10 @@ export default {
   },
   mounted() {
     this.fetchallpage();
-
-    // استدعاء الدالة لتحميل البيانات في الجدول
   },
 };
 </script>
+
 <style scoped>
 .row-color-1 {
   background-color: white;

@@ -37,15 +37,107 @@
 
     <!-- Charts Section -->
     <v-row>
-      <v-col md="8">
-        <v-card class="pa-4" outlined width="1000">
+      <v-col md="2">
+        <v-card
+          class="pa-4 d-flex flex-column align-center"
+          elevation="1"
+          style="border-radius: 8px; background-color: white"
+        >
+          <!-- العنوان -->
+          <div
+            style="
+              font-size: 24px;
+              font-weight: bold;
+              margin-bottom: 10px;
+              text-align: center;
+            "
+          >
+            تقييم المدرسة
+          </div>
+
+          <!-- زر التحديث -->
+          <v-btn
+            color="#eee"
+            elevation="0.2"
+            rounded
+            class="mb-2"
+            @click="fetchdata1"
+          >
+            <v-icon>mdi-update</v-icon>
+          </v-btn>
+
+          <!-- نص الانتظار -->
+          <div
+            v-if="loading1"
+            style="
+              text-align: center;
+              font-size: 16px;
+              color: gray;
+              margin-bottom: 10px;
+            "
+          >
+            الرجاء الانتظار قليلا...
+          </div>
+
+          <!-- Vertical Progress Bar -->
+          <div
+            style="
+              position: relative;
+              width: 40px;
+              height: 350px;
+              background-color: #eee;
+              border-radius: 12px;
+              overflow: hidden;
+              margin-top: 10px;
+              margin-bottom: 20px;
+              display: flex;
+              align-items: flex-end;
+            "
+          >
+            <div
+              :style="{
+                height: progress + '%',
+                width: '100%',
+                backgroundColor: progressColor,
+                transition: 'height 0.5s ease',
+              }"
+            ></div>
+          </div>
+
+          <!-- الدوائر الملونة أسفل البار -->
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              width: 100%;
+              max-width: 180px;
+            "
+          >
+            <div class="d-flex flex-column align-center">
+              <v-avatar size="24" color="red"></v-avatar>
+              <span style="font-size: 12px; margin-top: 4px">10-40</span>
+            </div>
+            <div class="d-flex flex-column align-center">
+              <v-avatar size="24" color="yellow"></v-avatar>
+              <span style="font-size: 12px; margin-top: 4px">41-70</span>
+            </div>
+            <div class="d-flex flex-column align-center">
+              <v-avatar size="24" color="green"></v-avatar>
+              <span style="font-size: 12px; margin-top: 4px">71-100</span>
+            </div>
+          </div>
+        </v-card>
+      </v-col>
+
+      <v-col md="6">
+        <v-card class="pa-4" outlined width="820">
           <div class="mb-4" style="font-size: 24px; font-weight: bold">
             حالة الحضور والغياب
           </div>
           <apexchart
             type="bar"
             height="458"
-            width="950"
+            width="780"
             :options="barChartOptions"
             :series="barSeries"
           />
@@ -53,7 +145,7 @@
       </v-col>
 
       <v-col md="4">
-        <v-card class="pa-4" outlined width="460">
+        <v-card class="pa-4" outlined width="464">
           <div class="mb-4" style="font-size: 24px; font-weight: bold">
             توزيع الطلاب
           </div>
@@ -70,12 +162,10 @@
   <v-container>
     <div style="height: 8px"></div>
     <v-row dir="rtl">
-      <v-col cols="2" style="font-size: 24px; font-weight: bold"
-        >المستخدمين</v-col
-      >
+      <v-col cols="2" style="font-size: 24px; font-weight: bold">الطلاب</v-col>
     </v-row>
     <v-row justify="space-between">
-      <v-col cols="3">
+      <v-col cols="5">
         <v-select
           v-model="filterBy"
           :items="filterOptions"
@@ -89,33 +179,13 @@
           style="
             max-width: 200px;
             height: 64px;
-            margin-left: 124px;
+            margin-left: 132px;
             direction: rtl;
           "
           density="comfortable"
         ></v-select>
       </v-col>
-      <v-col cols="3">
-        <v-select
-          v-model="filterBy"
-          :items="filterOptions"
-          label="اضافة فلتر"
-          item-title="text"
-          item-value="value"
-          variant="outlined"
-          hide-details
-          append-inner-icon="mdi-account-filter-outline"
-          class="mr-4"
-          style="
-            max-width: 200px;
-            height: 64px;
-            margin-left: 1px;
-            direction: rtl;
-          "
-          density="comfortable"
-        ></v-select>
-      </v-col>
-      <v-col cols="6">
+      <v-col cols="7">
         <v-text-field
           v-model="search"
           placeholder="ابحث عن طالب"
@@ -123,7 +193,7 @@
           append-inner-icon="mdi-magnify"
           clearable
           dir="rtl"
-          style="flex: 1; max-width: 680px; height: 64.1px; margin-right: 170px"
+          style="flex: 1; max-width: 780px; height: 64.1px; margin-right: 170px"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -253,13 +323,19 @@ export default defineComponent({
   },
   data() {
     return {
+      progress: "", // نسبة التقدم
       loading: false,
+      loading1: false,
       search: "",
       filterBy: null,
       parent: "",
+      school: {
+        email: "",
+        password: "",
+      },
       filterOptions: [
-        { text: "Name", value: "name" },
-        { text: "Email", value: "email" },
+        { text: "اسم الطالب", value: "name" },
+        { text: "بريده الالكتروني", value: "email" },
       ],
       headers: [
         { text: "Name", value: "name" },
@@ -270,25 +346,25 @@ export default defineComponent({
       cards: [
         {
           title: "عدد الطلاب المسجلين",
-          value: 1070,
+          value: 9,
           description: "مقارنة بالفصل الماضي",
           change: 1.5,
         },
         {
           title: "عدد المعلمين",
-          value: 45,
+          value: 10,
           description: "مقارنة بالفصل الماضي",
-          change: -1.5,
+          change: 1.5,
         },
         {
           title: "الغيابات اليومية",
-          value: 110,
+          value: 1,
           description: "مقارنة باليوم الماضي",
           change: -2.1,
         },
         {
           title: "الشكاوي اليومية",
-          value: 12,
+          value: 3,
           description: "مقارنة باليوم الماضي",
           change: -1.5,
         },
@@ -296,11 +372,11 @@ export default defineComponent({
       barSeries: [
         {
           name: "حضور",
-          data: [40, 30, 20, 50, 40, 35],
+          data: [8, 8, 9, 10, 7, 10],
         },
         {
           name: "غياب",
-          data: [10, 20, 25, 15, 20, 18],
+          data: [2, 2, 1, 0, 7, 0],
         },
       ],
       barChartOptions: {
@@ -326,9 +402,9 @@ export default defineComponent({
           position: "top",
         },
       },
-      pieSeries: [22, 28, 25, 16, 9, 5],
+      pieSeries: [1, 1, 4, 1, 1, 1],
       pieChartOptions: {
-        labels: ["الأول", "الثاني", "الثالث", "الرابع", "الخامس", "السادس"],
+        labels: ["السادس", "الخامس", "الرابع", "الثالث", "الثاني", "الاول"],
         colors: [
           "#2196f3",
           "#ff9800",
@@ -350,8 +426,70 @@ export default defineComponent({
         (item[this.filterBy] || "").toLowerCase().includes(term)
       );
     },
+    progressColor() {
+      if (this.progress < 40) return "red";
+      else if (this.progress < 80) return "yellow";
+      else return "green";
+    },
   },
   methods: {
+    async fetchdata3() {
+      const storedData = await localStorage.getItem("userData");
+      if (storedData) {
+        this.userData = JSON.parse(storedData);
+        this.school.email = this.userData.email || "";
+        this.school.password = this.userData.password || "";
+      }
+    },
+    async fetchdata1() {
+      this.loading1 = true;
+      try {
+        await this.fetchData("/rate");
+        console.log("API response:", this.getData);
+
+        // تخزين قيمة evaluation في progress
+        this.progress = this.getData.evaluation;
+        console.log("Progress:", this.progress);
+
+        // حفظ في localStorage
+        localStorage.setItem("schoolEvaluation", this.progress);
+        const form = {
+          email: this.school.email,
+          password: this.school.password,
+          type: "3",
+        };
+        await this.sendData("/login", form);
+        const token = this.postData.token;
+        const userData = this.postData.data;
+
+        if (token && userData) {
+          // حفظ بيانات Laravel
+          localStorage.setItem("auth_token", token);
+          localStorage.setItem("userData", JSON.stringify(userData));
+        }
+        this.editSuccess = true;
+        setTimeout(() => {
+          this.editSuccess = false;
+
+          // الانتقال للصفحة الرئيسية
+        }, 2000);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        this.progress = 0;
+
+        // حفظ القيمة الافتراضية في localStorage
+        localStorage.setItem("schoolEvaluation", this.progress);
+      } finally {
+        this.loading1 = false;
+      }
+    },
+    getStoredEvaluation() {
+      const savedProgress = localStorage.getItem("schoolEvaluation");
+      if (savedProgress !== null) {
+        return parseInt(savedProgress);
+      }
+      return 0; // قيمة افتراضية إذا لم يوجد شيء مخزن
+    },
     getRowClass(item, index) {
       const rowColors = ["row-color-1", "row-color-2"];
       return rowColors[index % rowColors.length];
@@ -402,6 +540,8 @@ export default defineComponent({
   },
   mounted() {
     this.fetchdata();
+    this.fetchdata3();
+    this.progress = this.getStoredEvaluation();
   },
 });
 </script>

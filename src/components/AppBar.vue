@@ -15,6 +15,24 @@
         src="../assets/Appbar/student-person-part-2-svgrepo-com 1.svg"
         style="width: 32px; margin-left: 15px; margin-top: 10px"
       />
+      <v-btn
+        dark
+        elevation="2"
+        style="
+          padding: 16px 24px;
+          font-size: 16px;
+          border-radius: 4px;
+          background-color: #800080;
+          color: white;
+          display: flex;
+          align-items: center;
+          margin-left: 10px;
+        "
+        @click="$router.push({ name: 'ReprotPage' })"
+      >
+        <v-icon left>mdi-file-document-outline</v-icon>
+        توليد تقرير
+      </v-btn>
       <!-- Center: تطبيق ادارة المدارس -->
       <div
         class="d-flex justify-center align-center"
@@ -27,10 +45,10 @@
         "
         id="ds"
       >
-        مدرسة الامل الخاصة
+        {{ school.name }}
       </div>
       <!-- Spacer to push right content -->
-      <span style="margin-left: 1450px; font-size: 22px; font-weight: normal"
+      <span style="margin-left: 1270px; font-size: 22px; font-weight: normal"
         >لوحة التحكم</span
       >
       <v-icon style="cursor: pointer; margin-left: 30px; font-size: 28px">
@@ -39,8 +57,15 @@
 
       <!-- Right side: تسجيل الدخول -->
       <img
-        src="../assets/Appbar/Photo.png"
-        style="width: 45px; margin-left: 25px; cursor: pointer"
+        src="../assets/school.jpg"
+        style="
+          width: 45px;
+          height: 45px;
+          margin-left: 25px;
+          cursor: pointer;
+          border-radius: 50%;
+          object-fit: cover;
+        "
         @click="dialog = true"
       />
     </v-app-bar>
@@ -54,13 +79,26 @@ export default {
     profile() {
       this.$router.push({ name: "ProfilePage" });
     },
+    async fetchdata() {
+      const storedData = await localStorage.getItem("userData");
+      if (storedData) {
+        this.userData = JSON.parse(storedData);
+        this.school.name = this.userData.name || "";
+      }
+    },
   },
   components: {
     ProfileDialog,
   },
+  mounted() {
+    this.fetchdata();
+  },
   data() {
     return {
       dialog: false,
+      school: {
+        name: "",
+      },
     };
   },
 };

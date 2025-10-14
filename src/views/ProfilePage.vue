@@ -48,7 +48,7 @@
           <v-row justify="center" class="mb-4">
             <v-col cols="12" class="text-center">
               <v-avatar size="120">
-                <v-img src="https://randomuser.me/api/portraits/men/1.jpg" />
+                <v-img :src="require('@/assets/school.jpg')" />
               </v-avatar>
               <div class="mt-2">
                 <v-btn icon size="small" elevation="0">
@@ -76,10 +76,23 @@
               >
               <div class="text-field-container">
                 <label class="custom-label" style="margin-top: 14px">
-                  القسط للطالب الواحد</label
+                  القسط للطالب 1-3</label
                 >
                 <v-text-field
                   v-model="school.feesPerStudent"
+                  prefix="ل.س"
+                  dir="rtl"
+                  variant="underlined"
+                  density="comfortable"
+                  hide-details
+                />
+              </div>
+              <div class="text-field-container">
+                <label class="custom-label" style="margin-top: 14px">
+                  القسط للطالب 4-6</label
+                >
+                <v-text-field
+                  v-model="school.feesPerStudent1"
                   prefix="ل.س"
                   dir="rtl"
                   variant="underlined"
@@ -193,6 +206,7 @@ export default {
         phone: "",
         description: "",
         feesPerStudent: "",
+        feesPerStudent1: "120000",
         transportFee: "",
       },
     };
@@ -200,6 +214,7 @@ export default {
   methods: {
     save() {
       console.log("Saved:", this.school);
+      this.closeDialog();
     },
     closeDialog() {
       this.$emit("update:modelValue", false); // هذا يغلق الـ dialog في المكون الأب

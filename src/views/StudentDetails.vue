@@ -167,7 +167,7 @@ export default {
     },
     goTopg() {
       this.$router.push({
-        name: "StudentAllDetailsPage",
+        name: "AttenedencePage",
       });
     },
   },

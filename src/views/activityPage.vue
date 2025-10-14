@@ -147,6 +147,229 @@
                     <div class="text-right grey--text">
                       {{ meal.date }}
                     </div>
+                    <div class="text-right grey--text">
+                      عدد الحجوزات: {{ reservationsCount[meal.id] || 0 }}/24
+                    </div>
+                    <div
+                      style="
+                        color: grey;
+                        margin-left: 100px;
+                        padding: 0;
+                        font-size: 15px;
+                        cursor: pointer;
+                        direction: rtl;
+                      "
+                      @click="showDetails(meal.id)"
+                    >
+                      انقر لعرض التفاصيل
+                    </div>
+                  </v-col>
+
+                  <!-- الصورة -->
+                  <v-col cols="auto" style="padding-bottom: 35px">
+                    <v-avatar size="109">
+                      <v-img :src="require('@/assets/activity1.jpg')" />
+                    </v-avatar>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+        <v-dialog v-model="dialog1" max-width="600">
+          <v-card
+            class="pa-4"
+            elevation="6"
+            style="
+              border-radius: 20px;
+              background-color: white;
+              color: black;
+              font-family: 'Cairo', sans-serif;
+            "
+          >
+            <v-card-actions
+              style="position: absolute; top: 11px; right: 10px; z-index: 10"
+            >
+              <v-icon color="#800080" size="24">mdi-pencil</v-icon>
+            </v-card-actions>
+            <!-- العنوان -->
+            <v-card-title
+              style="
+                font-weight: bold;
+                font-size: 22px;
+                text-align: center;
+                width: 100%;
+                color: #800080;
+              "
+            >
+              تفاصيل النشاط
+            </v-card-title>
+
+            <!-- معلومات النشاط -->
+            <v-card-text
+              style="font-family: 'Cairo', sans-serif; text-align: right"
+            >
+              <div style="margin-bottom: 10px">
+                <strong style="color: #800080">اسم النشاط:</strong>
+                {{ activityInfo.name }}
+              </div>
+              <div style="margin-bottom: 10px">
+                <strong style="color: #800080">السعر:</strong>
+                {{ activityInfo.price }} ل.س
+              </div>
+              <div style="margin-bottom: 10px">
+                <strong style="color: #800080">التاريخ:</strong>
+                {{ activityInfo.date }}
+              </div>
+              <div style="margin-bottom: 10px">
+                <strong style="color: #800080">الوقت:</strong>
+                {{ activityInfo.time }}
+              </div>
+              <div style="margin-bottom: 10px">
+                <strong style="color: #800080">بداية النشاط:</strong>
+                {{ activityInfo.start }}
+              </div>
+              <div style="margin-bottom: 10px">
+                <strong style="color: #800080">الهاتف:</strong>
+                {{ activityInfo.phone }}
+              </div>
+              <div style="margin-bottom: 10px">
+                <strong style="color: #800080">الحالة:</strong>
+                {{ activityInfo.status }}
+              </div>
+              <div style="margin-bottom: 10px">
+                <strong style="color: #800080">اسم المسؤول:</strong>
+                {{ activityInfo.resname }}
+              </div>
+              <div style="margin-bottom: 20px">
+                <strong style="color: #800080">الوصف:</strong>
+                {{ activityInfo.description }}
+              </div>
+
+              <!-- الطلاب -->
+              <h4
+                style="font-weight: bold; margin-bottom: 10px; color: #800080"
+                dir="rtl"
+              >
+                الطلاب المشاركون:
+              </h4>
+              <ul
+                style="list-style-type: none; padding: 0; margin: 0"
+                dir="rtl"
+              >
+                <li
+                  v-for="(student, index) in activityDetails"
+                  :key="index"
+                  style="padding: 12px 0; border-bottom: 1px solid #eee"
+                >
+                  <div style="font-weight: bold; font-size: 16px; color: black">
+                    {{ student.student_name }}
+                  </div>
+                  <div style="font-size: 14px; color: gray; margin-top: 4px">
+                    رقم العملية: {{ student.process_number }}
+                  </div>
+                </li>
+              </ul>
+            </v-card-text>
+
+            <!-- زر الإغلاق -->
+            <v-card-actions style="justify-content: center; margin-top: 10px">
+              <v-btn
+                color="#800080"
+                dark
+                rounded
+                elevation="2"
+                style="padding: 8px 24px; font-weight: bold"
+                @click="dialog1 = false"
+              >
+                إغلاق
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </div>
+      <div v-else-if="selectedTab === 'sba'" class="pa-4" dir="rtl">
+        <v-container fluid>
+          <v-row dense>
+            <v-col
+              v-for="meal in finishactivites"
+              :key="meal.phone"
+              cols="12"
+              md="6"
+              :offset-md="
+                meals.length % 2 !== 0 && index === meals.length - 1 ? 2 : 0
+              "
+            >
+              <v-card
+                class="pa-4"
+                elevation="4"
+                rounded="lg"
+                width="630px"
+                height="199px"
+              >
+                <!-- السعر في الزاوية -->
+
+                <div
+                  class="price-badge"
+                  style="
+                    width: 120px;
+                    height: 30px;
+                    font-size: 12px;
+                    font-weight: bold;
+                    text-align: center;
+                  "
+                  dir="rtl"
+                >
+                  {{ meal.price }} ل.س
+                </div>
+
+                <v-row align="center" no-gutters>
+                  <!-- محتوى النصوص -->
+                  <v-col
+                    style="
+                      display: flex;
+                      flex-direction: column;
+                      gap: 12px;
+                      margin-right: 12px;
+                    "
+                    ><div
+                      style="
+                        display: flex;
+                        flex-direction: row;
+                        gap: 24px;
+                        justify-content: flex-end;
+                      "
+                      class="text-right font-weight-bold"
+                    >
+                      <div>
+                        <v-icon
+                          :color="meal.status === 'active' ? 'green' : 'red'"
+                          size="20"
+                          style="margin-right: 4px"
+                        >
+                          {{
+                            meal.status === "active"
+                              ? "mdi-check-circle"
+                              : "mdi-check-circle"
+                          }}
+                        </v-icon>
+                        <span
+                          :style="{
+                            color: meal.status === 'active' ? 'green' : 'red',
+                            fontWeight: 'bold',
+                            fontSize: '14px',
+                          }"
+                        >
+                          {{ meal.status === "active" ? "نشط" : "منتهي" }}
+                        </span>
+                      </div>
+                      <div class="text-right font-weight-bold">
+                        {{ meal.name }}
+                      </div>
+                    </div>
+                    <div class="text-right grey--text">
+                      {{ meal.date }}
+                    </div>
                     <div class="text-right grey--text">عدد الحجوزات:2/24</div>
                     <div
                       style="
@@ -163,7 +386,7 @@
                   <!-- الصورة -->
                   <v-col cols="auto" style="padding-bottom: 35px">
                     <v-avatar size="109">
-                      <v-img src="https://i.pravatar.cc/150?img=3" />
+                      <v-img :src="require('@/assets/activity1.jpg')" />
                     </v-avatar>
                   </v-col>
                 </v-row>
@@ -172,7 +395,6 @@
           </v-row>
         </v-container>
       </div>
-
       <div v-else-if="selectedTab === 'exam'" class="pa-4">
         <v-container>
           <v-row
@@ -299,8 +521,13 @@ export default {
       name: "OrdersList",
       orders: [],
       activites: [],
+      finishactivites: [],
       meals: [],
       dialog: false,
+      reservationsCount: {},
+      dialog1: false,
+      activityInfo: {},
+      activityDetails: [],
       m: [],
     };
   },
@@ -329,35 +556,65 @@ export default {
       await this.fetchData("/getActiveActivities")
         .then(() => {
           this.activites = this.getData.data;
+
+          // بعد تحميل الأنشطة، استدعي fetchReservations لكل نشاط
+          this.activites.forEach((meal) => {
+            this.fetchReservations(meal.id);
+          });
         })
         .catch((error) => {
           console.error("Error fetching meals:", error);
         });
       this.loading = false;
     },
-
+    async fetchdata2() {
+      this.loading = true;
+      await this.fetchData("/getfinishActivities")
+        .then(() => {
+          this.finishactivites = this.getData.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching meals:", error);
+        });
+      this.loading = false;
+    },
     async accept(order) {
       const payload = {
-        record_id: order.student_food_meal.id,
+        record_id: order.id,
         action: "0",
       };
 
-      await this.sendData("/acceptOrRejectRequestFoodMeal", payload);
+      await this.sendData("/acceptOrRejectRequestActivity", payload);
       this.selectedTab = "exam";
       window.location.reload();
     },
     async reject(order) {
       const payload = {
-        record_id: order.student_food_meal.id,
+        record_id: order.id,
         action: "1",
       };
 
-      await this.sendData("/acceptOrRejectRequestFoodMeal", payload);
+      await this.sendData("/acceptOrRejectRequestActivity", payload);
       window.location.reload();
+    },
+    async showDetails(activityId) {
+      await this.sendData("/getActivityStudents", { activity_id: activityId });
+      this.activityDetails = this.postData;
+      this.activityInfo = this.activites.find((a) => a.id === activityId) || {};
+      console.log(this.activityDetails);
+      this.dialog1 = true;
+    },
+    async fetchReservations(activityId) {
+      await this.sendData("/getActivityStudentsCount", {
+        activity_id: activityId,
+      });
+      this.reservationsCount[activityId] = this.postData.students_count;
+      console.log(this.reservationsCount[activityId]);
     },
   },
   mounted() {
     this.fetchdata();
+    this.fetchdata2();
     this.fetchorders();
   },
 };
